@@ -14,18 +14,36 @@ double * calculaLinha(int tamanho, double M, double *linha)
     return linhaCalculada;
 }
 
+void imprimirMatriz(int k, int N, double **matriz, double M)
+{
+    int i, j;
+
+    printf("\nPasso %d:\n", k);
+    printf("M: %lf\n", M);
+    for(i=0; i<N; i++)
+    {
+        for(j=0; j<N+1; j++)
+        {
+            printf("%.2lf / ", matriz[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 int main()
 {
-    int i, j, k, N;
-    double **matriz, *linhaSuporte, *resultado, M;
+    int i, j, k, N, cont;
+    double **matriz, **matrizOriginal, *linhaSuporte, *resultado, M;
 
     printf("Qual o tamanho da matriz? (NxN): ");
     scanf("%d", &N);
 
     matriz = (double **)malloc(N * sizeof(double *));
+    matrizOriginal = (double **)malloc(N * sizeof(double *));
     for(i=0; i<N; i++)
     {
         matriz[i] = (double *)malloc((N+1) * sizeof(double));
+        matrizOriginal[i] = (double *)malloc((N+1) * sizeof(double));
     }
 
     printf("Insira os valores, linha por linha:\n");
@@ -34,9 +52,11 @@ int main()
         for(j=0; j<N+1; j++)
         {
             scanf("%lf", &matriz[i][j]);
+            matrizOriginal[i][j] = matriz[i][j];
         }
     }
 
+    cont = 0;
     for(k=0; k<N-1; k++)
     {
         for (i = k+1; i < N; i++)
@@ -48,16 +68,9 @@ int main()
             {
                 matriz[i][j] = matriz[i][j] - linhaSuporte[j];
             }
+            imprimirMatriz(cont, N, matriz, M);
+            cont++;
         }
-    }
-
-    for(i=0; i<N; i++)
-    {
-        for(j=0; j<N+1; j++)
-        {
-            printf("%.2lf / ", matriz[i][j]);
-        }
-        printf("\n");
     }
 
     resultado = (double *)malloc(N * sizeof(double));
@@ -69,6 +82,23 @@ int main()
             resultado[i] -= matriz[i][j] * resultado[j];
         }
         resultado[i] /= matriz[i][i];
+    }
+
+    printf("\nVerificacao:\n");
+    for(i=0; i<N; i++)
+    {
+        for(j=0; j<N+1; j++)
+        {
+            if(j == N)
+                printf(" = %.2lf\n", matrizOriginal[i][j]);
+
+            else if(matrizOriginal[i][j] < 0)
+                printf(" %.2lf * %.2lf", matrizOriginal[i][j], resultado[j]);
+
+            else
+                printf(" + %.2lf * %.2lf", matrizOriginal[i][j], resultado[j]);
+        }
+        printf("\n");
     }
 
     printf("\nSolucoes do sistema:\n");
