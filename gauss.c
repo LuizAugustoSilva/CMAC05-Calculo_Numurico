@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 double * calculaLinha(int tamanho, double M, double *linha)
 {
@@ -27,6 +28,17 @@ void imprimirMatriz(int k, int N, double **matriz, double M)
             printf("%.2lf / ", matriz[i][j]);
         }
         printf("\n");
+    }
+}
+
+void trocaLinhas(double **matriz, int linha1, int linha2, int N)
+{
+    double temp;
+    for(int j = 0; j < N+1; j++)
+    {
+        temp = matriz[linha1][j];
+        matriz[linha1][j] = matriz[linha2][j];
+        matriz[linha2][j] = temp;
     }
 }
 
@@ -59,6 +71,20 @@ int main()
     cont = 0;
     for(k=0; k<N-1; k++)
     {
+        // --- Pivotação Parcial ---
+        int maxLinha = k;
+        for(i=k+1; i<N; i++)
+        {
+            if(fabs(matriz[i][k]) > fabs(matriz[maxLinha][k]))
+                maxLinha = i;
+        }
+        if(maxLinha != k)
+        {
+            trocaLinhas(matriz, k, maxLinha, N);
+            printf("\nTrocando linhas %d e %d\n", k+1, maxLinha+1);
+        }
+
+        // --- Eliminação ---
         for (i = k+1; i < N; i++)
         {
             M = matriz[i][k] / matriz[k][k];
@@ -66,10 +92,12 @@ int main()
 
             for (j = 0; j < N+1; j++)
             {
-                matriz[i][j] = matriz[i][j] - linhaSuporte[j];
+                matriz[i][j] -= linhaSuporte[j];
             }
             imprimirMatriz(cont, N, matriz, M);
             cont++;
+
+            free(linhaSuporte); // liberando a linha calculada a cada iteração
         }
     }
 
@@ -91,10 +119,8 @@ int main()
         {
             if(j == N)
                 printf(" = %.2lf\n", matrizOriginal[i][j]);
-
             else if(matrizOriginal[i][j] < 0)
                 printf(" %.2lf * %.2lf", matrizOriginal[i][j], resultado[j]);
-
             else
                 printf(" + %.2lf * %.2lf", matrizOriginal[i][j], resultado[j]);
         }
@@ -111,9 +137,10 @@ int main()
     for(i=0; i<N; i++)
     {
         free(matriz[i]);
+        free(matrizOriginal[i]);
     }
     free(matriz);
-    free(linhaSuporte);
+    free(matrizOriginal);
     free(resultado);
 
     return 0;
