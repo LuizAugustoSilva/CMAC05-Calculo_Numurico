@@ -61,6 +61,7 @@ int main()
         erro = calcularErro(resultsTemp, estimativa, N);
     }
 
+    printf("Resultados:\n");
     for(i = 0; i < N; i++)
     {
         printf("x%d: %lf\n", i+1, resultsTemp[i]);
