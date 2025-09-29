@@ -26,13 +26,24 @@ void printEquacao(int i, double *equacao, int tam, double denominador)
     int j;
 
     printf("\nL%d(x) = (%.4lfx^%d", i, equacao[0], tam-1);
-    for(j = 1; j < tam; j++)
+    for(j = 1; j < tam-2; j++)
     {
         if(equacao[j] < 0)
             printf(" %.4lfx^%d", equacao[j], tam-1-j);
         else
             printf(" +%.4lfx^%d", equacao[j], tam-1-j);
     }
+    if(equacao[j] < 0)
+        printf(" %.4lfx", equacao[j]);
+    else
+        printf(" +%.4lfx", equacao[j]);
+
+    j++;
+    if(equacao[j] < 0)
+        printf(" %.4lf", equacao[j]);
+    else
+        printf(" +%.4lf", equacao[j]);
+
     printf(")/%.4lf\n", denominador);
 }
 
@@ -90,7 +101,26 @@ int main()
             resp[i] += L[j][i];
         }
     }
-    printEquacao(1, resp, N, 1);
+
+    printf("\ng(x) = ");
+    printf("%.4lfx^%d ", resp[0], N-1);
+    for(i = 1; i < N-2; i++)
+    {
+        if(resp[i] < 0)
+            printf("%.4lfx^%d ", resp[i], N-1-i);
+        else
+            printf("+%.4lfx^%d ", resp[i], N-1-i);
+    }
+    if(resp[i] < 0)
+        printf("%.4lfx ", resp[i]);
+    else
+        printf("+%.4lfx ", resp[i]);
+    
+    i++;
+    if(resp[i] < 0)
+        printf("%.4lf\n", resp[i]);
+    else
+        printf("+%.4lf\n", resp[i]);
 
     free(primeiro);
     free(pontosX);
