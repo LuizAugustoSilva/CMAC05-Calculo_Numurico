@@ -21,9 +21,24 @@ double *multTerms(double *t1, int *tam1, double *t2, int tam2)
     return result;
 }
 
+void printEquacao(int i, double *equacao, int tam, double denominador)
+{
+    int j;
+
+    printf("\nL%d(x) = (%.4lfx^%d", i, equacao[0], tam-1);
+    for(j = 1; j < tam; j++)
+    {
+        if(equacao[j] < 0)
+            printf(" %.4lfx^%d", equacao[j], tam-1-j);
+        else
+            printf(" +%.4lfx^%d", equacao[j], tam-1-j);
+    }
+    printf(")/%.4lf\n", denominador);
+}
+
 int main()
 {
-    int i, j, k, N, ok, tamanho;
+    int i, j, N, tamanho;
     double denominador;
     double *pontosX, *pontosY, *resp, *primeiro, *segundo;
     double **L;
@@ -42,11 +57,11 @@ int main()
 
     for(i = 0; i < N; i++)
     {
-        primeiro = (double *)malloc(2 * sizeof(double));
+        primeiro = (double *)malloc(sizeof(double));
         segundo = (double *)malloc(2 * sizeof(double));
-        tamanho = 2;
+        primeiro[0] = 1;
+        tamanho = 1;
         denominador = 1;
-        ok = 0;
         for(j = 0; j < N; j++)
         {
             if(j == i)
@@ -54,19 +69,12 @@ int main()
 
             denominador *= pontosX[i] - pontosX[j];
 
-            if(!ok)
-            {
-                primeiro[0] = 1;
-                primeiro[1] = -pontosX[j];
-                ok = 1;
-            }
-            else
-            {
-                segundo[0] = 1;
-                segundo[1] = -pontosX[j];
-                primeiro = multTerms(primeiro, &tamanho, segundo, 2);
-            }
+            segundo[0] = 1;
+            segundo[1] = -pontosX[j];
+            primeiro = multTerms(primeiro, &tamanho, segundo, 2);
         }
+
+        printEquacao(i, primeiro, N, denominador);
 
         for(j = 0; j < N; j++)
             primeiro[j] = pontosY[i] / denominador * primeiro[j];
@@ -81,9 +89,8 @@ int main()
         {
             resp[i] += L[j][i];
         }
-        printf("%lf ", resp[i]);
     }
-    printf("\n");
+    printEquacao(1, resp, N, 1);
 
     free(primeiro);
     free(pontosX);
