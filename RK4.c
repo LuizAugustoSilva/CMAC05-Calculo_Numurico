@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <math.h>
 
 double f(double x, double y)
 {
-    return -2.0 * y;
+    return -y+x+1;
 }
 
 double rk4(double x0, double y0, double h, int n)
@@ -11,8 +12,8 @@ double rk4(double x0, double y0, double h, int n)
     double k1, k2, k3, k4;
     double x = x0, y = y0;
 
-    printf("Iteração 0: x = %.6f  y = %.10f\n", x, y);
-    for (i = 1; i <= n; i++)
+    printf("Iteracao 0: x = %.5f  y = %.5f\n", x, y);
+    for(i = 1; i <= n; i++)
     {
         k1 = f(x, y);
         k2 = f(x + h/2.0, y + (h/2.0) * k1);
@@ -22,7 +23,7 @@ double rk4(double x0, double y0, double h, int n)
         y = y + (h / 6.0) * (k1 + 2.0*k2 + 2.0*k3 + k4);
         x = x + h;
 
-        printf("Iteração %d: x = %.6f  y = %.10f\n", i, x, y);
+        printf("Iteracao %d: x = %.5f  y = %.5f\n", i, x, y);
     }
 
     return y;
@@ -33,7 +34,7 @@ int main()
     double x0, y0, xf, h, resultado;
     int n;
 
-    printf("=== Runge-Kutta 4ª ordem (RK4) ===\n");
+    printf("=== Runge-Kutta 4 ordem ===\n");
 
     printf("Digite x0: ");
     scanf("%lf", &x0);
